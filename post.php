@@ -24,6 +24,17 @@
             </div>
         </div>
     </nav>
+    <div class="contact-clean" style="background: rgb(255,255,255);">
+        <form method="post" style="background: rgb(232,228,228);width: 50%;min-width: -7px;max-width: 632px;min-height: 5px;max-height: -42px;padding: 17px;">
+            <h2 class="text-center"></h2>
+            <div class="form-group"><small class="form-text text-danger"></small></div>
+            <div class="form-group"><textarea class="form-control" name="message" placeholder="Message" rows="14"></textarea></div>
+            <div class="form-group">
+            <button class="btn btn-primary" type="submit">Publish</button>
+            <input type="file" accept="image/png, image/jpeg"/>
+            </div>
+        </form>
+    </div>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
