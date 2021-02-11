@@ -1,10 +1,46 @@
+<?php
+include 'db\func.php';
+session_start();
+ 
+$message = ''; 
+if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
+{
+    $text = filter_input(INPUT_POST,"message",FILTER_SANITIZE_STRING);
+    $last = InsertPost($text,date("Y-m-d"));
+    if(isset($_FILES) && is_array($_FILES) && count($_FILES)>0) {
+        // Raccourci d'écriture pour le tableau reçu
+        $fichiers = $_FILES['img'];
+        // Boucle itérant sur chacun des fichiers
+        for($i=0;$i<count($fichiers['name']);$i++){
+
+        // Action pour avoir un nom unique et ecité les personnes qui upload plusieur fois le meme nom de fichier
+        $nom_fichier = $fichiers['name'][$i];
+        $nomFichierExplode = explode(".", $nom_fichier);
+        $newNomFichier = md5(time() . $nom_fichier) . '.' . strtolower(end($nomFichierExplode));
+
+
+        // Déplacement depuis le répertoire temporaire
+        move_uploaded_file($fichiers['tmp_name'][$i],'uploaded_files/'.$newNomFichier);
+        InsertMedia(end($nomFichierExplode),$newNomFichier,date("Y-m-d"), $last);
+
+        
+        }
+        header('Location: index.php');
+    }
+   
+    
+}
+
+$_SESSION['message'] = $message;
+
+
+?>
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Untitled</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
@@ -25,13 +61,14 @@
         </div>
     </nav>
     <div class="contact-clean" style="background: rgb(255,255,255);">
-        <form method="post" style="background: rgb(232,228,228);width: 50%;min-width: -7px;max-width: 632px;min-height: 5px;max-height: -42px;padding: 17px;">
+        <form method="post" style="background: rgb(232,228,228);width: 50%;min-width: -7px;max-width: 632px;min-height: 5px;max-height: -42px;padding: 17px;" enctype="multipart/form-data">
             <h2 class="text-center"></h2>
             <div class="form-group"><small class="form-text text-danger"></small></div>
             <div class="form-group"><textarea class="form-control" name="message" placeholder="Message" rows="14"></textarea></div>
             <div class="form-group">
-            <button class="btn btn-primary" type="submit">Publish</button>
-            <input type="file" accept="image/png, image/jpeg"/>
+            <button class="btn btn-primary" type="submit" name="btnPost" value="SendPost">Publish</button>
+            <input type="file" accept="image/png, image/jpeg" name="img[]" multiple/>
+            
             </div>
         </form>
     </div>
