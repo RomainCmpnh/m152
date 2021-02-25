@@ -5,7 +5,7 @@ function InsertPost($commentaire,$creationDate){
     $sql = "INSERT INTO `post`(`commentaire`,`creatonDate`,`modificationDate`)
     VALUES (:commentaire, :creatonDate, :modifDate)";
 
-    $query = connect()->prepare($sql);
+    $query = Connect()->prepare($sql);
 
     $query->execute([
         ':commentaire' => $commentaire,
@@ -13,7 +13,7 @@ function InsertPost($commentaire,$creationDate){
         ':modifDate' => $creationDate,
     ]);
 
-    $latest_id = connect()->lastInsertId();
+    $latest_id = Connect()->lastInsertId();
     return $latest_id;
 }
 
@@ -22,7 +22,7 @@ function InsertMedia($typeMedia, $nomMedia, $creationDate,$lastid)
 {
     $sql = "INSERT INTO `media`(`typeMedia`,`nomMedia`,`creationDate`,`idPost`)
     VALUES (:typeMedia,:nomMedia ,:creationDate , $lastid)";
-    $query = connect()->prepare($sql);
+    $query = Connect()->prepare($sql);
     $query->execute([
         ':typeMedia' => $typeMedia,
         ':nomMedia' => $nomMedia,
@@ -31,7 +31,7 @@ function InsertMedia($typeMedia, $nomMedia, $creationDate,$lastid)
 }
 
 function GetLastID(){
-    return connect()->lastInsertID();
+    return Connect()->lastInsertID();
 }
 
 function getPost() {
@@ -40,7 +40,7 @@ function getPost() {
 
     try {
         if ($requete == null) {
-            $requete = connect()->prepare("SELECT * FROM `post`");
+            $requete = Connect()->prepare("SELECT * FROM `post`");
         }
         $estOK = $requete->execute();
     } catch (Exception $e) {

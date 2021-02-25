@@ -2,18 +2,31 @@
 include 'db\func.php';
 session_start();
  
+$MAX_FILE_SIZE = 3145728;    // 3MB in bytes
+$MAX_POST_SIZE = 73400320;  // 70MB in bytes
+
 $message = ''; 
 if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
 {
+
+    $allowedExtensions = array("image/png", "image/jpg", "image/jpeg", "image/gif");
+
     $text = filter_input(INPUT_POST,"message",FILTER_SANITIZE_STRING);
     $last = InsertPost($text,date("Y-m-d"));
     if(isset($_FILES) && is_array($_FILES) && count($_FILES)>0) {
+        foreach ($_FILES['img']['size'] as $key => $value) {
+            if ($value > $MAX_FILE_SIZE) {
+                $error = 'File too heavy.';
+            } else {
+                $size_total += $value;
+            }
         // Raccourci d'écriture pour le tableau reçu
         $fichiers = $_FILES['img'];
+        $fichiers = $_FILES['type'];
         // Boucle itérant sur chacun des fichiers
         for($i=0;$i<count($fichiers['name']);$i++){
 
-        // Action pour avoir un nom unique et ecité les personnes qui upload plusieur fois le meme nom de fichier
+        // Action pour avoir un nom unique et cité les personnes qui upload plusieur fois le meme nom de fichier
         $nom_fichier = $fichiers['name'][$i];
         $nomFichierExplode = explode(".", $nom_fichier);
         $newNomFichier = md5(time() . $nom_fichier) . '.' . strtolower(end($nomFichierExplode));
@@ -22,13 +35,12 @@ if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
         // Déplacement depuis le répertoire temporaire
         move_uploaded_file($fichiers['tmp_name'][$i],'uploaded_files/'.$newNomFichier);
         InsertMedia(end($nomFichierExplode),$newNomFichier,date("Y-m-d"), $last);
-
         
         }
         header('Location: index.php');
     }
-   
     
+    } 
 }
 
 $_SESSION['message'] = $message;
@@ -62,6 +74,7 @@ $_SESSION['message'] = $message;
     </nav>
     <div class="contact-clean" style="background: rgb(255,255,255);">
         <form method="post" style="background: rgb(232,228,228);width: 50%;min-width: -7px;max-width: 632px;min-height: 5px;max-height: -42px;padding: 17px;" enctype="multipart/form-data">
+        <input type="hidden" name="maxValue" value="7000000"/>
             <h2 class="text-center"></h2>
             <div class="form-group"><small class="form-text text-danger"></small></div>
             <div class="form-group"><textarea class="form-control" name="message" placeholder="Message" rows="14"></textarea></div>
