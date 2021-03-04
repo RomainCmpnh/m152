@@ -4,25 +4,21 @@ session_start();
  
 $MAX_FILE_SIZE = 3145728;    // 3MB in bytes
 $MAX_POST_SIZE = 73400320;  // 70MB in bytes
-
+$error = "";
 $message = ''; 
 if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
 {
-
-    $allowedExtensions = array("image/png", "image/jpg", "image/jpeg", "image/gif");
-
     $text = filter_input(INPUT_POST,"message",FILTER_SANITIZE_STRING);
     $last = InsertPost($text,date("Y-m-d"));
     if(isset($_FILES) && is_array($_FILES) && count($_FILES)>0) {
         foreach ($_FILES['img']['size'] as $key => $value) {
-            if ($value > $MAX_FILE_SIZE) {
+            if ($value > $MAX_FILE_SIZE ) {
                 $error = 'File too heavy.';
             } else {
                 $size_total += $value;
-            }
+   
         // Raccourci d'écriture pour le tableau reçu
         $fichiers = $_FILES['img'];
-        $fichiers = $_FILES['type'];
         // Boucle itérant sur chacun des fichiers
         for($i=0;$i<count($fichiers['name']);$i++){
 
@@ -32,12 +28,14 @@ if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
         $newNomFichier = md5(time() . $nom_fichier) . '.' . strtolower(end($nomFichierExplode));
 
 
-        // Déplacement depuis le répertoire temporaire
-        move_uploaded_file($fichiers['tmp_name'][$i],'uploaded_files/'.$newNomFichier);
+        // Déplacement depuis le répertoire temporaire et vérification coté serveur
+        if (move_uploaded_file($fichiers['tmp_name'][$i],'uploaded_files/'.$newNomFichier)){
         InsertMedia(end($nomFichierExplode),$newNomFichier,date("Y-m-d"), $last);
+        }
         
         }
         header('Location: index.php');
+    }
     }
     
     } 
@@ -83,6 +81,7 @@ $_SESSION['message'] = $message;
             <input type="file" accept="image/png, image/jpeg" name="img[]" multiple/>
             
             </div>
+            <h1> <?= $error ?></h1>
         </form>
     </div>
     <script src="assets/js/jquery.min.js"></script>

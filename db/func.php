@@ -1,7 +1,16 @@
-<?php
++<?php
 include "connect.php";
 
 function InsertPost($commentaire,$creationDate){
+
+    /* Demande à mysqli de lancer une exception si une erreur survient */
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+$mysqli = new mysqli("localhost", "root", "");
+
+    $mysqli->begin_transaction();
+
+try {
     $sql = "INSERT INTO `post`(`commentaire`,`creatonDate`,`modificationDate`)
     VALUES (:commentaire, :creatonDate, :modifDate)";
 
@@ -14,12 +23,24 @@ function InsertPost($commentaire,$creationDate){
     ]);
 
     $latest_id = Connect()->lastInsertId();
-    return $latest_id;
+    return $latest_id;} catch (mysqli_sql_exception $exception) {
+        $mysqli->rollback();
+    
+        throw $exception;
+    }
 }
 
 
 function InsertMedia($typeMedia, $nomMedia, $creationDate,$lastid)
 {
+    /* Demande à mysqli de lancer une exception si une erreur survient */
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+$mysqli = new mysqli("localhost", "root", "");
+
+    $mysqli->begin_transaction();
+
+try {
     $sql = "INSERT INTO `media`(`typeMedia`,`nomMedia`,`creationDate`,`idPost`)
     VALUES (:typeMedia,:nomMedia ,:creationDate , $lastid)";
     $query = Connect()->prepare($sql);
@@ -28,6 +49,11 @@ function InsertMedia($typeMedia, $nomMedia, $creationDate,$lastid)
         ':nomMedia' => $nomMedia,
         ':creationDate' => $creationDate,
     ]);
+} catch (mysqli_sql_exception $exception) {
+    $mysqli->rollback();
+
+    throw $exception;
+}
 }
 
 function GetLastID(){
@@ -50,4 +76,24 @@ function getPost() {
         return $requete->fetchAll();
     else
         return $requete;
+}
+function getAllPosts()
+{
+
+    $db = connect();
+
+    $sql = "SELECT * FROM post ORDER BY idPost DESC";
+    $request = $db->prepare($sql);
+    $request->execute();
+    return $request->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getAllMedias()
+{
+    $db = connect();
+
+    $sql = "SELECT * FROM media ORDER BY idPost DESC ";
+    $request = $db->prepare($sql);
+    $request->execute();
+    return $request->fetchAll(PDO::FETCH_ASSOC);
 }

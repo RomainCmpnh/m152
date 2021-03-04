@@ -1,5 +1,6 @@
 <?php 
-            
+include 'db\func.php';
+session_start();            
 ?>
 <!DOCTYPE html>
 <html>
@@ -30,20 +31,41 @@
     <div class="container">
         <h1 class="my-4">Bienvenu sur le super Blog !&nbsp;</h1>
         <div class="row">
-            <div class="col-md-8" style="width: 750px;padding: 17px;font-size: 23px;min-width: 33%;max-width: 30%;"><img class="img-fluid" src="assets/img/logo-cfpt-site.png" alt="Alt Text" style="width: 224px;min-width: 20%;"></div>
-            <div class="col-md-4" style="width: 481px;min-width: 34px;max-width: 571px;height: 386px;">
-            <?php 
+            <div class="col-md-8" style="width: 750px;padding: 17px;font-size: 23px;min-width: 33%;max-width: 30%;">
+            <?php
+									$posts = getAllPosts();
+									$media = getAllMedias();
+									$total = count($posts);
+									$totalMedias = count($media);
+
+
+									for ($i = 0; $i < $total; $i++) {
+										echo $posts[$i]["commentaire"];
+										echo "<td><a href='deletePost.php?id=" . $posts[$i]["idPost"] . "'> <button class='btn btn-primary btn-sm'>Delete</button></a> 
+										<a href='updatePost.php?id=" . $posts[$i]["idPost"] . "'> <button class='btn btn-primary btn-sm'>Update</button></a>";
+										echo '</b></p></td></tr>';
+										echo '<div class="panel-thumbnail">';
+										for ($j = 0; $j < $totalMedias; $j++) {
+											if ($posts[$i]["idPost"] == $media[$j]["idPost"]) {
+												echo "<tr><td>";									
+													echo '<div class="input-group">
+														<div class="input-group-btn">'
+														. '<img src="uploaded_files/'. $media[$j]["nomMedia"] . '" width="350">'  .
+														'</div></td>';
+						
+
+												echo "</tr>";
+											}
+											echo '</div>';
+										}
+
+										echo '</div>
+
+								</div>';
+									}
+
+									?>
             
-            ?>
-                <h3 class="my-3">Project Description</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae. Sed dui lorem, adipiscing in adipiscing et, interdum nec metus. Mauris ultricies, justo eu convallis placerat, felis enim.</p>
-                <h3 class="my-3">Project Details</h3>
-                <ul class="list-unstyled">
-                    <li>Lorem Ipsum</li>
-                    <li>Consectetur</li>
-                    <li>Dolor Sit Amet</li>
-                    <li>Adipiscing Elit</li>
-                </ul>
             </div>
         </div>
     </div>
