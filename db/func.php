@@ -1,14 +1,9 @@
-+<?php
+<?php
 include "connect.php";
 
 function InsertPost($commentaire,$creationDate){
 
-    /* Demande à mysqli de lancer une exception si une erreur survient */
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-$mysqli = new mysqli("localhost", "root", "");
-
-    $mysqli->begin_transaction();
+   connect()->begin_transaction();
 
 try {
     $sql = "INSERT INTO `post`(`commentaire`,`creatonDate`,`modificationDate`)
@@ -21,10 +16,14 @@ try {
         ':creatonDate' => $creationDate,
         ':modifDate' => $creationDate,
     ]);
-
+    
     $latest_id = Connect()->lastInsertId();
-    return $latest_id;} catch (mysqli_sql_exception $exception) {
-        $mysqli->rollback();
+    return $latest_id;
+    connect()->commit();
+} 
+    
+    catch (mysqli_sql_exception $exception) {
+        connect()->rollback();
     
         throw $exception;
     }
@@ -33,12 +32,7 @@ try {
 
 function InsertMedia($typeMedia, $nomMedia, $creationDate,$lastid)
 {
-    /* Demande à mysqli de lancer une exception si une erreur survient */
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-$mysqli = new mysqli("localhost", "root", "");
-
-    $mysqli->begin_transaction();
+    connect()->begin_transaction();
 
 try {
     $sql = "INSERT INTO `media`(`typeMedia`,`nomMedia`,`creationDate`,`idPost`)
@@ -49,8 +43,10 @@ try {
         ':nomMedia' => $nomMedia,
         ':creationDate' => $creationDate,
     ]);
+
+    connect()->commit();
 } catch (mysqli_sql_exception $exception) {
-    $mysqli->rollback();
+    connect()->rollback();
 
     throw $exception;
 }
@@ -77,6 +73,7 @@ function getPost() {
     else
         return $requete;
 }
+
 function getAllPosts()
 {
 

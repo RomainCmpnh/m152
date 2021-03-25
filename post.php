@@ -21,7 +21,11 @@ if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
         $fichiers = $_FILES['img'];
         // Boucle itérant sur chacun des fichiers
         for($i=0;$i<count($fichiers['name']);$i++){
-
+            $imgType = $fichiers["type"][$i];
+            $stringImgType = substr($imgType, 0, strpos($imgType, "/"));
+      
+            if ($stringImgType == "image") {
+        
         // Action pour avoir un nom unique et cité les personnes qui upload plusieur fois le meme nom de fichier
         $nom_fichier = $fichiers['name'][$i];
         $nomFichierExplode = explode(".", $nom_fichier);
@@ -31,7 +35,7 @@ if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
         // Déplacement depuis le répertoire temporaire et vérification coté serveur
         if (move_uploaded_file($fichiers['tmp_name'][$i],'uploaded_files/'.$newNomFichier)){
         InsertMedia(end($nomFichierExplode),$newNomFichier,date("Y-m-d"), $last);
-        }
+        }}
         
         }
         header('Location: index.php');

@@ -1,5 +1,5 @@
 <?php 
-include 'db\func.php';
+include 'db\func.php';  
 session_start();            
 ?>
 <!DOCTYPE html>
@@ -29,7 +29,7 @@ session_start();
     </nav>
     <div></div>
     <div class="container">
-        <h1 class="my-4">Bienvenu sur le super Blog !&nbsp;</h1>
+        <h1 class="my-4">Bienvenue sur le super Blog !&nbsp;</h1>
         <div class="row">
             <div class="col-md-8" style="width: 750px;padding: 17px;font-size: 23px;min-width: 33%;max-width: 30%;">
             <?php
@@ -41,6 +41,7 @@ session_start();
 
 									for ($i = 0; $i < $total; $i++) {
 										echo $posts[$i]["commentaire"];
+                                        echo  "<table>";
 										echo "<td><a href='deletePost.php?id=" . $posts[$i]["idPost"] . "'> <button class='btn btn-primary btn-sm'>Delete</button></a> 
 										<a href='updatePost.php?id=" . $posts[$i]["idPost"] . "'> <button class='btn btn-primary btn-sm'>Update</button></a>";
 										echo '</b></p></td></tr>';
@@ -61,7 +62,7 @@ session_start();
 
 										echo '</div>
 
-								</div>';
+								</div> </table>';
 									}
 
 									?>
