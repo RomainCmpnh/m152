@@ -23,19 +23,26 @@ if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
         for($i=0;$i<count($fichiers['name']);$i++){
             $imgType = $fichiers["type"][$i];
             $stringImgType = substr($imgType, 0, strpos($imgType, "/"));
+            $nom_fichier = $fichiers['name'][$i];
       
-            if ($stringImgType == "image") {
+            if (substr($nom_fichier, -3) == "png" || substr($nom_fichier, -3) == "jpg" || substr($nom_fichier, -3) == "PNG" || substr($nom_fichier, -3) == "JPG" || substr($nom_fichier, -3) == "peg" 
+            || substr($nom_fichier, -3) == "PEG" || substr($nom_fichier, -3) == "mp4" || substr($nom_fichier, -3) == "MP4" || substr($nom_fichier, -3) == "mp3" || substr($nom_fichier, -3) == "MP3" 
+            || substr($nom_fichier, -3) == "wav"  || substr($nom_fichier, -3) == "WAV"    
+           )
+ {
         
-        // Action pour avoir un nom unique et cité les personnes qui upload plusieur fois le meme nom de fichier
-        $nom_fichier = $fichiers['name'][$i];
+        // Action pour avoir un nom unique et cité les personnes qui upload plusieur fois le meme nom de fichier 
         $nomFichierExplode = explode(".", $nom_fichier);
         $newNomFichier = md5(time() . $nom_fichier) . '.' . strtolower(end($nomFichierExplode));
 
 
         // Déplacement depuis le répertoire temporaire et vérification coté serveur
         if (move_uploaded_file($fichiers['tmp_name'][$i],'uploaded_files/'.$newNomFichier)){
+       
         InsertMedia(end($nomFichierExplode),$newNomFichier,date("Y-m-d"), $last);
-        }else $error = "Erreur, l'image n'a pas été sauvegardée.";}
+       
+        
+        }else $error = "Erreur, le média n'a pas été sauvegardée.";}
         
         }
         header('Location: index.php');
@@ -82,7 +89,7 @@ $_SESSION['message'] = $message;
             <div class="form-group"><textarea class="form-control" name="message" placeholder="Message" rows="14"></textarea></div>
             <div class="form-group">
             <button class="btn btn-primary" type="submit" name="btnPost" value="SendPost">Publish</button>
-            <input type="file" accept="image/png, image/jpeg" name="img[]" multiple/>
+            <input type="file" accept="image/png, image/jpeg, video/mp4, , audio/mp3, audio/wav, image/gif" name="img[]" multiple/>
             
             </div>
             <h1> <?= $error ?></h1>

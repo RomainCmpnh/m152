@@ -48,11 +48,29 @@ session_start();
 										echo '<div class="panel-thumbnail">';
 										for ($j = 0; $j < $totalMedias; $j++) {
 											if ($posts[$i]["idPost"] == $media[$j]["idPost"]) {
-												echo "<tr><td>";									
+												
+											
+												$typeFinal = explode("/", $media[$j]["typeMedia"]);
+
+												echo "<tr><td>";												
+												if ($typeFinal[0] == "video") {
 													echo '<div class="input-group">
 														<div class="input-group-btn">'
-														. '<img src="uploaded_files/'. $media[$j]["nomMedia"] . '" width="350">'  .
+														. '<video src="' . $media[$j]["nomMedia"] . '" controls loop autoplay width="350"></video>'  .
 														'</div></td>';
+												}
+												if ($typeFinal[0] == "image") {
+													echo '<div class="input-group">
+														<div class="input-group-btn">'
+														. '<img src="'. $media[$j]["nomMedia"] . '" width="350">'  .
+														'</div></td>';
+												}
+												if ($typeFinal[0] == "audio") {
+													echo '<div class="input-group">
+														<div class="input-group-btn">'
+														. '<audio src="'. $media[$j]["nomMedia"] . '" controls width="350"></audio>'  .
+														'</div></td>';
+												}
 						
 
 												echo "</tr>";
