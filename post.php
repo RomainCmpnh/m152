@@ -35,7 +35,7 @@ if (isset($_POST['btnPost']) && $_POST['btnPost'] == 'SendPost')
         // Déplacement depuis le répertoire temporaire et vérification coté serveur
         if (move_uploaded_file($fichiers['tmp_name'][$i],'uploaded_files/'.$newNomFichier)){
         InsertMedia(end($nomFichierExplode),$newNomFichier,date("Y-m-d"), $last);
-        }}
+        }else $error = "Erreur, l'image n'a pas été sauvegardée.";}
         
         }
         header('Location: index.php');
